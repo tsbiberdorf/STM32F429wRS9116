@@ -7,28 +7,23 @@ PROGNAME= rsi_wc_app
 LINKS= -pthread -L../../../build/ -lrps
 PATH_CONFIG=$(shell pwd)
 
-INCLUDE_PATH = ../../utilities/certificates
+
 RSI_DRIVER_PATH = ../../../include
-PATH_CONFIG=$(shell pwd)
+RSI_APP_PATH = ../../../nwk/applications
+
 
 CFLAGS=  -I$(RSI_DRIVER_PATH)/
-CFLAGS+=  -I$(PATH_CONFIG)/
-CFLAGS+=  -I$(INCLUDE_PATH)\
-          -I ../../../rom/
+CFLAGS+= -I$(RSI_APP_PATH)/
+CFLAGS+= -D RSI_SAMPLE_HAL
 
-CFLAGS+= -DRSI_SAMPLE_HAL
-CFLAGS+= -D RSI_BLE_ENABLE
+STATION_PING_APP = rsi_station_ping.o 
 
-WLAN_STATION_BLE_BRIDGE_APP = main.o \
-                      rsi_wlan_app.o \
-                      rsi_ble_app.o 
+all: $(STATION_PING_APP) 
 
-all: $(WLAN_STATION_BLE_BRIDGE_APP) 
-
-	make wlan_ble CC=$(CC) -C ../../../build/ path_config=$(PATH_CONFIG) 
+	make wlan CC=$(CC) -Wall -C ../../../build/ path_config=$(PATH_CONFIG) 
 	$(CC) $(CFLAGS) *.o $(LINKS) -o $(PROGNAME) 
 	rm -f  *.o  
 
 
 clean:
-	$(rm) $(WLAN_STATION_BLE_BRIDGE_APP) core *.o *~ rsi_wc_app
+	$(rm) $(STATION_PING_APP) core *.o *~ rsi_wc_app 
